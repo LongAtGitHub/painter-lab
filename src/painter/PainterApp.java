@@ -1,22 +1,35 @@
 package painter;
 
 import edu.macalester.graphics.CanvasWindow;
-import edu.macalester.graphics.GraphicsObject;
-import edu.macalester.graphics.Point;
+import edu.macalester.graphics.GraphicsGroup;
+
 import edu.macalester.graphics.ui.Button;
 
 import java.awt.Color;
+import java.util.List;
 
-import org.w3c.dom.events.Event;
 
 public class PainterApp {
     private CanvasWindow canvas;
     private final PaintSettingsView paintSettingsView;
     private Brush currentBrush;
+    private List<Brush> availableBrushes;
 
     public PainterApp() {
         canvas = new CanvasWindow("Painter", 900, 800);
-        currentBrush = new CirclesBrush();
+        GraphicsGroup paintLayer = new GraphicsGroup();
+        canvas.add(paintLayer);
+
+        CirclesBrush circlesBrush = new CirclesBrush();
+        SprayPaint sprayPaint = new SprayPaint();
+        Eraser eraser = new Eraser();
+        currentBrush = sprayPaint;
+        availableBrushes = List.of(sprayPaint, circlesBrush, eraser);
+        double y_position = 250;
+        for (Brush brush: availableBrushes) {
+            addBrushButton(brush, y_position);
+            y_position+=30;
+        }
 
         paintSettingsView = new PaintSettingsView(Color.BLUE, 60);
         BrushOptions brushOptions = paintSettingsView.getBrushOptions();
@@ -24,13 +37,16 @@ public class PainterApp {
         
 
         // Replace with event handlers that use mouse position
-        canvas.onMouseDown(event -> currentBrush.apply(event.getPosition(), canvas, brushOptions ));
-        canvas.onDrag(event ->  currentBrush.apply(event.getPosition(), canvas, brushOptions));
+        canvas.onMouseDown(event -> currentBrush.apply(event.getPosition(), paintLayer, brushOptions ));
+        canvas.onDrag(event ->  currentBrush.apply(event.getPosition(), paintLayer, brushOptions));
 
     }
 
     private void addBrushButton(Brush brush, double y) {
-        Button bu
+        String title = brush.getName();
+        Button button = new Button(title);
+        this.canvas.add(button, 10 ,y);
+        button.onClick(()-> currentBrush = brush);
     }
 
     public static void main(String[] args) {
