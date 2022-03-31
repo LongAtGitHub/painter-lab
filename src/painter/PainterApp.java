@@ -6,6 +6,8 @@ import edu.macalester.graphics.Point;
 
 import java.awt.Color;
 
+import org.w3c.dom.events.Event;
+
 public class PainterApp {
     private CanvasWindow canvas;
     private final PaintSettingsView paintSettingsView;
@@ -16,7 +18,9 @@ public class PainterApp {
         paintSettingsView = new PaintSettingsView(Color.BLUE, 60);
         canvas.add(paintSettingsView, 10 - paintSettingsView.getBounds().getMinX(), 10);
 
-        paint(canvas.getCenter());  // TODO: Replace with event handlers that use mouse position
+        // Replace with event handlers that use mouse position
+        canvas.onMouseDown(event -> paint(event.getPosition()));
+        canvas.onDrag(event ->   paint(event.getPosition()));
     }
 
     private void paint(Point location) {
