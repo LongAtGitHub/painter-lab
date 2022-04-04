@@ -8,7 +8,9 @@ import edu.macalester.graphics.ui.Button;
 import java.awt.Color;
 import java.util.List;
 
-
+/**
+ * The whole app
+ */
 public class PainterApp {
     private CanvasWindow canvas;
     private final PaintSettingsView paintSettingsView;
@@ -23,8 +25,9 @@ public class PainterApp {
         CirclesBrush circlesBrush = new CirclesBrush();
         SprayPaint sprayPaint = new SprayPaint();
         Eraser eraser = new Eraser();
+        NormalBrush normalBrush = new NormalBrush();
         currentBrush = sprayPaint;
-        availableBrushes = List.of(sprayPaint, circlesBrush, eraser);
+        availableBrushes = List.of(sprayPaint, circlesBrush, eraser, normalBrush);
         double y_position = 250;
         for (Brush brush: availableBrushes) {
             addBrushButton(brush, y_position);
@@ -32,13 +35,12 @@ public class PainterApp {
         }
 
         paintSettingsView = new PaintSettingsView(Color.BLUE, 60);
-        BrushOptions brushOptions = paintSettingsView.getBrushOptions();
         canvas.add(paintSettingsView, 10 - paintSettingsView.getBounds().getMinX(), 10);
         
 
         // Replace with event handlers that use mouse position
-        canvas.onMouseDown(event -> currentBrush.apply(event.getPosition(), paintLayer, brushOptions ));
-        canvas.onDrag(event ->  currentBrush.apply(event.getPosition(), paintLayer, brushOptions));
+        canvas.onMouseDown(event -> currentBrush.apply(event.getPosition(), paintLayer,  paintSettingsView.getBrushOptions() ));
+        canvas.onDrag(event ->  currentBrush.apply(event.getPosition(), paintLayer,  paintSettingsView.getBrushOptions()));
 
     }
 
